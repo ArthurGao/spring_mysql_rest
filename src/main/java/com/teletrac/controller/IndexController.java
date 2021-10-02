@@ -1,50 +1,72 @@
 package com.teletrac.controller;
 
-import java.util.List;
-
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import com.teletrac.repository.ConsumingRestUtil;
-import com.teletrac.repository.Market;
+import com.teletrac.annotation.UserLoginToken;
 import com.teletrac.repository.Record;
 import com.teletrac.repository.RecordRepository;
+import com.teletrac.security.TokenService;
+import com.teletrac.security.User;
+import com.teletrac.security.UserService;
 
 @RestController
 @RequestMapping(value = "/")
 public class IndexController {
 
 	@Autowired
-	private RestTemplate restTemplate;
-	
-	@Autowired
 	private RecordRepository recordRepository;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private TokenService tokenService;
 
 	@RequestMapping
 	public String index() {
 		return "hello world";
 	}
-	
-	@RequestMapping(method = RequestMethod.POST, value="/add/record")
+
+	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	@ResponseBody
-	public RecordReply registerRecord(@RequestBody Record record) {
+	public Object login(@RequestBody User user) {
+		JSONObject jsonObject = new JSONObject();
+		User userForBase = userService.findUserById(user.getId());
+		if (userForBase == null) {
+			jsonObject.put("message", "Login failed, no user");
+			return jsonObject;
+		} else {
+			if (!userForBase.getPassword().equals(user.getPassword())) {
+				jsonObject.put("message", "Login failed, password wrong");
+				return jsonObject;
+			} else {
+				String token = tokenService.getToken(userForBase);
+				jsonObject.put("token", token);
+				jsonObject.put("user", userForBase);
+				return jsonObject.toString();
+			}
+		}
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/add/record")
+	@ResponseBody
+	@UserLoginToken
+	public RecordReply registerRecord(@RequestBody @Validated Record record) {
 		RecordReply reply = new RecordReply();
 		reply.setDeviceId(record.getDeviceId());
 		reply.setRecordType(record.getRecordType());
 		try {
 			recordRepository.add(record);
-		
-		}
-		catch(Exception e) {
+
+		} catch (Exception e) {
 			reply.setStatus("Failed");
 			reply.setErrorMsg(e.getMessage());
-			return reply;
+			throw new CommonException("100", "Error");
 		}
 		reply.setStatus("Successful");
 

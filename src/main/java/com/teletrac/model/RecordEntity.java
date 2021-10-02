@@ -1,17 +1,24 @@
 package com.teletrac.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Entity
 @Table(name = "record")
+@EntityListeners(AuditingEntityListener.class)
 public class RecordEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,6 +42,14 @@ public class RecordEntity {
 
 	@Column(name = "fieldC", nullable = false)
 	private BigDecimal fieldC;
+
+	@Column(name = "create_by")
+	@CreatedBy
+	private String createBy;
+
+	@Column(name = "create_date")
+	@CreatedDate
+	private Timestamp createDate;
 
 	public Long getId() {
 		return id;
@@ -90,6 +105,22 @@ public class RecordEntity {
 
 	public void setFieldC(BigDecimal fieldC) {
 		this.fieldC = fieldC;
+	}
+
+	public String getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public Timestamp getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Timestamp createDate) {
+		this.createDate = createDate;
 	}
 
 }

@@ -3,10 +3,15 @@ package com.teletrac.repository;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Record {
-
+	@NotNull
+	@Length(min = 1)
 	@JsonProperty("RecordType")
 	private String recordType;
 
@@ -72,5 +77,4 @@ public class Record {
 	public void setFieldC(BigDecimal fieldC) {
 		this.fieldC = fieldC;
 	}
-
 }
