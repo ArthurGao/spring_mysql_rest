@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.teletrac.repository.RecordRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 17.074 s - in com.teletrac.repository.RecordRepositoryTest
