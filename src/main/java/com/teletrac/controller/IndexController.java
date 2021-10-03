@@ -54,7 +54,7 @@ public class IndexController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/add/record")
+	@RequestMapping(method = RequestMethod.POST, value = "/record")
 	@ResponseBody
 	@UserLoginToken
 	public RecordReply registerRecord(@RequestBody @Validated Record record) {
