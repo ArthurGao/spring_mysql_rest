@@ -15,20 +15,9 @@ public class RecordRepository {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	public void add(Record record) throws EntityExistsException {
-		entityManager.persist(mapRecord(record));
-
-	}
-
-	private RecordEntity mapRecord(Record record) {
-		RecordEntity recordEntity = new RecordEntity();
-		recordEntity.setDeviceId(record.getDeviceId());
-		recordEntity.setEventDatetime(record.getEventDateTime());
-		recordEntity.setFieldA(record.getFieldA());
-		recordEntity.setFieldB(record.getFieldB());
-		recordEntity.setFieldC(record.getFieldC());
-		recordEntity.setRecordType(record.getRecordType());
-		return recordEntity;
+	public Long add(RecordEntity recordEntity) throws EntityExistsException {
+		entityManager.persist(recordEntity);
+		return recordEntity.getId();
 	}
 
 }

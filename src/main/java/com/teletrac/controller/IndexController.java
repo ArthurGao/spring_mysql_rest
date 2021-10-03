@@ -15,13 +15,14 @@ import com.teletrac.repository.RecordRepository;
 import com.teletrac.security.TokenService;
 import com.teletrac.security.User;
 import com.teletrac.security.UserService;
+import com.teletrac.service.RecordService;
 
 @RestController
 @RequestMapping(value = "/")
 public class IndexController {
 
 	@Autowired
-	private RecordRepository recordRepository;
+	private RecordService recordService;
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -61,7 +62,7 @@ public class IndexController {
 		reply.setDeviceId(record.getDeviceId());
 		reply.setRecordType(record.getRecordType());
 		try {
-			recordRepository.add(record);
+			recordService.addRecord(record);
 
 		} catch (Exception e) {
 			reply.setStatus("Failed");
